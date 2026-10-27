@@ -30,6 +30,15 @@ publish.sh rm my-page
 publish.sh rebuild   # after editing site/*
 ```
 
+Pull-request pages for the sidebar's Pull requests section (see `SKILL.md`):
+
+```bash
+pr-explainers.py /tmp/out/pr-explainers   # index + one explainer page per open/recently merged PR
+pr-activity.py /tmp/out/pr-activity       # weekly opened/merged/reviewed chart
+```
+
+Each prints the `publish.sh publish` / `put` commands that upload its output.
+
 See `SKILL.md` for every flag and convention.
 
 ## Configuration
@@ -43,6 +52,11 @@ See `SKILL.md` for every flag and convention.
 | `ARTIFACTS_TITLE` | `Claude Artifacts` | Site title |
 | `ARTIFACTS_SUBTITLE` | `Pages from my Claude Code sessions` | Site subtitle |
 | `ARTIFACTS_SKILL_URL` | placeholder | Link to this repo, shown in the gallery's "replicate this site" prompt |
+| `ARTIFACTS_PR_HOSTS` | `github.com` | PR scripts: comma list of hosts to read PRs from |
+| `ARTIFACTS_PR_REPOS` | all repos | PR scripts: comma list of `owner/repo` to restrict to |
+| `ARTIFACTS_PR_MERGED_DAYS` | `30` | `pr-explainers.py`: also include PRs merged in the last N days |
+| `ARTIFACTS_PR_QUERY` | unset | `pr-explainers.py`: one search query replacing the default searches |
+| `ARTIFACTS_ACTIVITY_WEEKS` | `12` | `pr-activity.py`: weeks covered |
 
 ## Visibility
 

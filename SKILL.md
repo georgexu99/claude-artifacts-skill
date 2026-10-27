@@ -87,6 +87,46 @@ someone else, `Waiting` with a `--next` naming what it waits on. A page untouche
 30+ days that is still Open/Waiting shows a "stale" pill. Uploads skip files whose
 content is unchanged, so `rebuild` and repeat publishes only cost what differs.
 
+## Pull-request pages
+
+Two stdlib-only Python scripts next to `publish.sh` build pages for the Pull requests
+sidebar section from your own PRs, through `gh api` / `gh api graphql` only. Each writes
+standalone HTML that links `../site.css`, then prints the exact publish commands.
+
+- `pr-explainers.py <out dir>`: an index grouped by repo, plus one page per PR
+  (`pr-<owner>-<repo>-<n>.html`) with state, size, review status per reviewer, requested
+  reviewers, CI rollup with failing checks, branches, labels, linked issues, files grouped
+  by top-level directory, commit headlines and the description rendered by GitHub's
+  Markdown API, whatever its format. Default set: your open PRs plus those merged in the
+  last `ARTIFACTS_PR_MERGED_DAYS` days. Refresh when a PR opens, merges or changes review/CI
+  state.
+- `pr-activity.py <out dir>`: one page of PRs opened and merged per week, reviews given
+  per week (PRs by bots excluded), median time to merge, a per-repo table and the merged
+  list. Refresh weekly.
+
+```bash
+dir=$(mktemp -d)
+~/.claude/skills/claude-artifacts/pr-explainers.py "$dir/pr-explainers"
+publish.sh publish "$dir/pr-explainers/index.html" --slug pr-explainers --title "PR Explainers" --emoji 💡 --nav prs --no-open
+for f in "$dir"/pr-explainers/pr-*.html; do publish.sh put "pr-explainers/$(basename "$f")" "$f"; done
+
+~/.claude/skills/claude-artifacts/pr-activity.py "$dir/pr-activity"
+publish.sh publish "$dir/pr-activity/index.html" --slug pr-activity --title "PR Activity" --emoji 📈 --nav prs --no-open
+```
+
+| Variable | Default | Used by |
+|---|---|---|
+| `ARTIFACTS_PR_HOSTS` | `github.com` | both; comma list, e.g. `github.com,ghe.example.com` |
+| `ARTIFACTS_PR_REPOS` | all repos | both; comma list of `owner/repo` to restrict to |
+| `ARTIFACTS_PR_MERGED_DAYS` | `30` | explainers; `0` = open PRs only |
+| `ARTIFACTS_PR_QUERY` | unset | explainers; one search query replacing the defaults, e.g. `repo:cli/cli is:pr is:open` |
+| `ARTIFACTS_ACTIVITY_WEEKS` | `12` | activity |
+
+PR titles, descriptions and file paths become public with the site, so run the visibility
+check first: with private repos in scope, set `ARTIFACTS_PR_REPOS` or skip the mirror.
+Write the output outside any git checkout; the scripts delete stale `pr-*.html` in the
+out dir on each run.
+
 ## What doesn't carry over
 
 - **Single file only.** Multi-file artifacts (`files` map, uploaded assets) need their
