@@ -119,7 +119,7 @@ publish.sh publish "$dir/pr-activity/index.html" --slug pr-activity --title "PR 
 | `ARTIFACTS_PR_HOSTS` | `github.com` | both; comma list, e.g. `github.com,ghe.example.com` |
 | `ARTIFACTS_PR_REPOS` | all repos | both; comma list of `owner/repo` to restrict to |
 | `ARTIFACTS_PR_MERGED_DAYS` | `30` | explainers; `0` = open PRs only |
-| `ARTIFACTS_PR_QUERY` | unset | explainers; one search query replacing the defaults, e.g. `repo:cli/cli is:pr is:open` |
+| `ARTIFACTS_PR_QUERY` | unset | explainers; one search query replacing the defaults, e.g. `repo:<owner>/<repo> is:pr is:open` |
 | `ARTIFACTS_ACTIVITY_WEEKS` | `12` | activity |
 
 PR titles, descriptions and file paths become public with the site, so run the visibility

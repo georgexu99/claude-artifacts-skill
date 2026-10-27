@@ -12,7 +12,7 @@ Environment:
   ARTIFACTS_PR_MERGED_DAYS  also include PRs merged in the last N days (default 30)
   ARTIFACTS_PR_REPOS        comma list of owner/repo to restrict to (default: all)
   ARTIFACTS_PR_QUERY        replace the default searches with this one search query
-                            (e.g. "repo:cli/cli is:pr is:open"); REPOS still applies
+                            (e.g. "repo:<owner>/<repo> is:pr is:open"); REPOS still applies
 """
 
 import datetime as dt
