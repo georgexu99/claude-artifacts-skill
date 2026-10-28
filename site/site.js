@@ -243,6 +243,15 @@
           history.replaceState(null, '', location.pathname + location.search + frame.contentWindow.location.hash);
         });
         frame.contentWindow.addEventListener('keydown', onPrintKey);
+        // GitHub (and most sites) send X-Frame-Options: deny, so off-site links must leave the frame.
+        frame.contentDocument.addEventListener('click', function (e) {
+          var a = e.target.closest && e.target.closest('a[href]');
+          if (!a || (a.target && a.target !== '_self')) return;
+          var url = new URL(a.getAttribute('href'), frame.contentWindow.location.href);
+          if (url.origin === location.origin || !/^https?:$/.test(url.protocol)) return;
+          e.preventDefault();
+          window.open(url.href, '_blank', 'noopener');
+        }, true);
       } catch (e) { /* cross-origin (e.g. session redirect); nothing to sync */ }
     });
     window.addEventListener('hashchange', function () {
